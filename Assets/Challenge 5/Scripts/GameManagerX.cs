@@ -8,10 +8,12 @@ using UnityEngine.UI;
 public class GameManagerX : MonoBehaviour
 {
     public TextMeshProUGUI scoreText;
+    public TextMeshProUGUI timeText;
     public TextMeshProUGUI gameOverText;
     public GameObject titleScreen;
-    public Button restartButton; 
+    public Button restartButton;
 
+    public float timeValue;
     public List<GameObject> targetPrefabs;
 
     private int score;
@@ -23,12 +25,13 @@ public class GameManagerX : MonoBehaviour
     private float minValueY = -3.75f; //  y value of the center of the bottom-most square
     
     // Start the game, remove title screen, reset score, and adjust spawnRate based on difficulty button clicked
-    public void StartGame()
+    public void StartGame(int difficulty)
     {
         spawnRate /= 5;
         isGameActive = true;
         StartCoroutine(SpawnTarget());
         score = 0;
+        timeValue = 60;
         UpdateScore(0);
         titleScreen.SetActive(false);
     }
@@ -71,6 +74,12 @@ public class GameManagerX : MonoBehaviour
     {
         score += scoreToAdd;
         scoreText.text = "Score: " + score;
+    }
+
+    public void TimeLeft()
+    {
+        timeValue -= Time.deltaTime;
+        timeText.text = "time " + Mathf.Round(timeValue);
     }
 
     // Stop game, bring up game over text and restart button
