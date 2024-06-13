@@ -16,18 +16,20 @@ public class GameManager : MonoBehaviour
     private float spawnRate = 1.0f;
     private int score;
 
-
     // Start is called before the first frame update
     void Start()
     {
-        
+        gameOverText.gameObject.SetActive(false);
+        restartButton.gameObject.SetActive(false);
+        titleScreen.gameObject.SetActive(true);
     }
 
     // Update is called once per frame
     void Update()
     {
-        
+
     }
+
     IEnumerator SpawnTarget()
     {
         while (isGameActive)
@@ -35,33 +37,38 @@ public class GameManager : MonoBehaviour
             yield return new WaitForSeconds(spawnRate);
             int index = Random.Range(0, targets.Count);
             Instantiate(targets[index]);
-            
         }
-        
     }
+
     public void UpdateScore(int scoreToAdd)
     {
         score += scoreToAdd;
         scoreText.text = "Score: " + score;
     }
+
     public void GameOver()
     {
-        restartButton.gameObject.SetActive(true);
-        gameOverText.gameObject.SetActive(true);
         isGameActive = false;
+        gameOverText.gameObject.SetActive(true);
+        restartButton.gameObject.SetActive(true);
     }
+
     public void RestartGame()
     {
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }
-    public void StartGame()
+
+    // Atualize o método StartGame para aceitar um parâmetro de dificuldade
+    public void StartGame(int difficulty)
     {
         isGameActive = true;
         score = 0;
-
-        StartCoroutine(SpawnTarget());        
-        UpdateScore(0);
+        spawnRate = 1.0f / difficulty; // Ajuste a taxa de spawn com base na dificuldade
 
         titleScreen.gameObject.SetActive(false);
+
+        StartCoroutine(SpawnTarget());
+        UpdateScore(0);
     }
 }
+
